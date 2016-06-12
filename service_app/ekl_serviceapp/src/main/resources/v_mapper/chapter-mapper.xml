@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.ChapterMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Chapter" id="ChapterResult">
+		<id column="CHAPTER_ID" jdbcType="INTEGER" property="chapterId" />
+		<result column="COURSE_ID" jdbcType="INTEGER" property="courseId" />
+		<result column="CHAPTER_NUM" jdbcType="INTEGER" property="chapterNum" />
+		<result column="CHAPTER_NAME" jdbcType="VARCHAR" property="chapterName" />
+		<result column="PARENT_CHAPTER_ID" jdbcType="INTEGER" property="parentChapterId" />
+	
+		<result column="SCHEDULE" jdbcType="INTEGER" property="schedule" />
+	</resultMap>
+
+	<select id="getChaptersByCourseId" resultMap="ChapterResult">
+	
+		SELECT
+			*
+		FROM
+			VD_CHAPTER
+		WHERE
+			PARENT_CHAPTER_ID = - 1
+			AND COURSE_ID = #{courseId} 
+		ORDER BY CHAPTER_NUM		
+	</select>
+	
+	<select id="getChapterByParentId" resultMap="ChapterResult">
+		SELECT
+			a.*, (select vs.COMPLETE from VD_SCHEDULE vs , tu_user tu where vs.USER_ID = #{userId} and vs.USER_ID = tu.userId and vs.CHAPTER_ID =a.CHAPTER_ID) SCHEDULE  
+		FROM
+			VD_CHAPTER a 
+		WHERE
+			PARENT_CHAPTER_ID = #{chapterId}
+		ORDER BY
+			CHAPTER_NUM	
+	</select>
+
+</mapper>

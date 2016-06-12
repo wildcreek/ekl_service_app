@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.ICourseMapper">
+	<select id="queryCourseInfo" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    b.courseName, b.examType
+			FROM
+			    td_course a,
+			    td_course b
+			WHERE
+			    a.examType = #{examType}
+			        AND b.parentExamType = a.parentExamType 
+	 	]]>
+	</select>
+	
+	<select id="detailExamList" resultType="string" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+			SELECT DISTINCT
+			    c.examType
+			FROM
+			    td_testPaper tp,
+			    td_course c
+			WHERE
+			    c.parentExamType = #{parentExamType}
+			        AND tp.examType = c.examType
+	 	]]>
+	</select>
+	
+	<select id="examTime" resultType="string" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    DATE_FORMAT(examTime, '%Y-%m-%d %H:%i:%s') examTime
+			FROM
+			    td_course
+			WHERE
+			    examType = #{examType}
+	 	]]>
+	</select>
+</mapper>

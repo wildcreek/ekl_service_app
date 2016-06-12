@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IQuestionMapper">
+	<select id="statInfo" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    knowledgePointId, COUNT(knowledgePointId) kpCount
+		FROM
+		    td_question
+		WHERE
+		    testPaperId IN 
+		    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		GROUP BY knowledgePointId 
+	</select>
+				
+	<select id="idList" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    q.questionId,
+		    q.description qDescription,
+		    dataQ.dataQuestionId,
+		    dataQ.name,
+		    dataQ.description
+		FROM
+		    td_question q
+		        LEFT JOIN
+		    td_dataQuestion dataQ ON q.dataQuestionId = dataQ.dataQuestionId
+		WHERE
+		    q.knowledgePointId IN 
+		    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+	<select id="questionIdsByTestPaper" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    q.questionId,
+			    q.description qDescription,
+			    dataQ.dataQuestionId,
+			    dataQ.name,
+			    dataQ.description
+			FROM
+			    td_question q
+			        LEFT JOIN
+			    td_dataQuestion dataQ ON q.dataQuestionId = dataQ.dataQuestionId
+			WHERE
+			    q.testPaperId = #{testPaperId}
+			ORDER BY q.orderId
+	 	]]>
+	</select>
+	
+	<select id="questionsInfo" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    q.questionId,
+		    concat(q.questionType) questionType,
+		    q.description,
+		    concat(q.orderId) orderId,
+		    q.knowledgePointId,
+		    q.dataQuestionId,
+		    kp.knowledgePointName
+		FROM
+		    td_question q,
+		    td_knowledgePoint kp
+		WHERE q.questionId IN 
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach> 
+		and  q.knowledgePointId = kp.knowledgePointId
+	</select>
+	
+	
+	<select id="questionOptions" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    questionId, questionOptionName, description
+		FROM
+		    online_learning.td_questionOption
+		WHERE
+		    questionId IN 
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+	</select>
+	
+	<select id="correctAnswer" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    questionId, questionOptionName
+		FROM
+		    td_questionOption
+		WHERE
+		    isCorrectOption = 1
+		        AND questionId IN 
+		        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+	</select>
+	
+	<select id="questionAnswer" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    qo.questionId,
+		    qo.questionOptionName,
+		    q.answerAnalysis,
+		    tp.testPaperName
+		FROM
+			td_testPaper tp,
+		    td_question q,
+		    td_questionOption qo
+		WHERE
+		    qo.isCorrectOption = 1
+		        AND qo.questionId IN 
+		        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+		        AND qo.questionId = q.questionId
+		        AND q.testPaperId = tp.testPaperId
+	</select>
+	
+	<select id="yearOfQuestion" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+		SELECT 
+		    q.questionId, tp.year
+		FROM
+		    td_question q
+		        JOIN
+		    td_testPaper tp ON q.testPaperId = tp.testPaperId
+		WHERE
+		    q.questionId IN 
+	        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+			</foreach>
+	</select>
+	
+</mapper>

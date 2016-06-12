@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+	<property name="logDir" value="${catalina.base}${file.separator}logs" />
+	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%.1level]%date{'yyyyMMdd HH:mm:ss,SSS'}[%thread]%class{0}.%line:%msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="SERVICE_APP_INFO"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logDir}${file.separator}service_app_info.log
+		</File>
+		<encoder>
+			<pattern>[%.1level]%date{'yyyyMMdd HH:mm:ss,SSS'}[%thread]%class{0}.%line:%msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>10</maxIndex>
+			<FileNamePattern>${logDir}${file.separator}service_app_info.%i.log.zip
+			</FileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	
+	<appender name="SERVICE_APP_ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logDir}${file.separator}service_app_error.log
+		</File>
+		<encoder>
+			<pattern>[%.1level]%date{'yyyyMMdd HH:mm:ss,SSS'}[%thread]%class{0}.%line:%msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>10</maxIndex>
+			<FileNamePattern>${logDir}${file.separator}service_app_error.%i.log.zip
+			</FileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	
+	<!-- <appender name="SMS_ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${logDir}${file.separator}send_sms_error.log
+		</File>
+		<encoder>
+			<pattern>[%.1level]%date{'yyyyMMdd HH:mm:ss,SSS'}[%thread]%class{0}.%line:%msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<maxIndex>10</maxIndex>
+			<FileNamePattern>${logDir}${file.separator}service_app_error.%i.log.zip
+			</FileNamePattern>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>100MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+	
+	<logger name="SMS" level="ERROR">
+		<appender-ref ref="SMS_ERROR" />
+	</logger> -->
+	
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="SERVICE_APP_INFO" />
+		<appender-ref ref="SERVICE_APP_ERROR" />
+	</root>
+	
+</configuration>

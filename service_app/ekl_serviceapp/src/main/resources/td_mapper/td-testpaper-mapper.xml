@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.ITestPaperMapper">
+	<select id="queryTestPaperIds" resultType="string" parameterType="map" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    testPaperId
+			FROM
+			    td_testPaper
+			WHERE
+			    isShow = 1 AND courseName = #{courseName}
+			        AND examType LIKE #{examType} 
+	 	]]>
+		
+	</select>
+	
+	<select id="queryTestPaperInfo" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT DISTINCT
+			    tp.testPaperId,
+			    testPaperName,
+			    degreeAfDegree,
+			    ph.testPaperId isAnswer
+			FROM
+			    td_testPaper tp
+			        LEFT JOIN
+			    td_practiceHistory ph ON tp.testPaperId = ph.testPaperId
+			WHERE
+			    testPaperType = 1 AND isShow = 1
+			        AND examType LIKE #{examType}
+			ORDER BY tp.orderId
+	 	]]>
+	</select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IKnowledgePointMapper">
+	<select id="queryAllInfo" resultType="map" useCache="false" flushCache="true">
+		<![CDATA[
+	    	SELECT 
+				knowledgePointName,
+				knowledgePointId,
+				concat(`orderId`) orderId,
+			    knowledgePointDescr,
+			    courseName,
+				parentKnowledgePointId,
+			    DATE_FORMAT(lastModifyTime, '%Y-%m-%d %H:%i:%s') lastModifyTime
+			FROM
+				td_knowledgePoint
+	 	]]>
+	</select>
+</mapper>

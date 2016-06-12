@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IPracticeHistoryMapper">
+	<insert id="add" parameterType="map">
+		<![CDATA[
+			INSERT INTO `td_practiceHistory`
+			(
+			`practiceHistoryId`,
+			`userId`,
+			`testPaperId`,
+			`answerType`,
+			`beginTime`,
+			`endTime`,
+			`isFinishAnswer`)
+			VALUES(
+			#{practiceHistoryId},
+			#{userId},
+			#{testPaperId},
+			#{answerType},
+			STR_TO_DATE(#{beginTime},'%Y-%m-%d %H:%i:%s'),
+			STR_TO_DATE(#{endTime},'%Y-%m-%d %H:%i:%s'),
+			#{isFinishAnswer})
+		]]>
+	</insert>
+	
+	<select id="getUUID" resultType="string" useCache="false" flushCache="true">
+		<![CDATA[
+			select uuid()
+		]]>
+	</select>
+</mapper>

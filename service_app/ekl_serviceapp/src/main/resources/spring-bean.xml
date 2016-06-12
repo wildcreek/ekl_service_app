@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+
+	<!-- 开启spring注解 -->
+	<context:annotation-config />
+	
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config/database.properties</value>
+				<value>classpath:config/connect-pool.properties</value>
+				<value>classpath:config/redis.properties</value>
+				<value>classpath:config/system-config.properties</value>
+				<value>classpath:config/send-sms.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 资源文件绑定器 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>message-info</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="true" />
+	</bean>	
+
+	<!-- spring redis -->
+	<bean id="redisSentinelConfiguration"
+		class="org.springframework.data.redis.connection.RedisSentinelConfiguration">
+		<property name="master">
+			<bean class="org.springframework.data.redis.connection.RedisNode">
+				<property name="name" value="mymaster"></property>
+			</bean>
+		</property>
+		<property name="sentinels">
+			<set>
+				<bean class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg index="0" value="${sentinels1.ipaddr}" />
+					<constructor-arg index="1" value="${sentinels1.port}"
+						type="int" />
+				</bean>
+				<bean class="org.springframework.data.redis.connection.RedisNode">
+					<constructor-arg index="0" value="${sentinels1.ipaddr}" />
+					<constructor-arg index="1" value="${sentinels1.port}"
+						type="int" />
+				</bean>
+			</set>
+		</property>
+	</bean>
+	<bean id="jedisConnFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${master.ipaddr}"/>
+        <property name="port" value="${master.port}"/>
+        <property name="usePool" value="false"/>
+		<constructor-arg ref="redisSentinelConfiguration" />
+	</bean>
+	<bean id="stringRedisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="jedisConnFactory" />
+	</bean>
+
+	<!-- mybatis -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="minPoolSize">
+			<value>${service.app.connect.pool.minPoolSize}</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>${service.app.connect.pool.checkoutTimeout}</value>
+		</property>
+		<property name="maxPoolSize" value="${service.app.connect.pool.maxPoolSize}" />
+		<property name="initialPoolSize" value="${service.app.connect.pool.initialPoolSize}" />
+		<property name="idleConnectionTestPeriod">
+			<value>${service.app.connect.pool.idleConnectionTestPeriod}</value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>${service.app.connect.pool.testConnectionOnCheckout}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>${service.app.connect.pool.maxIdleTime}</value>
+		</property>
+	</bean>
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+		<!-- <property name="mapperLocations" value="classpath:qa_mapper/*.xml,testdatabase_mapper/*.xml,video_mapper/*.xml" /> -->
+		<property name="mapperLocations" value="classpath:*mapper/*mapper.xml" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+		<property name="basePackage" value="com.leyikao.onlinelearn.serviceapp.td.mapper,com.leyikao.onlinelearn.serviceapp.v.mapper,com.leyikao.onlinelearn.serviceapp.qa.mapper" />
+	</bean>
+
+	<!-- 事务管理 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<bean id="springUtil" class="com.leyikao.onlinelearn.serviceapp.util.SpringUtil" />
+	<bean id="messageSourceHelper" class="com.leyikao.onlinelearn.serviceapp.util.MessageSourceHelper" />
+	<bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper"/>
+	
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+	
+	<!-- 事务 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 装配service -->
+	<context:component-scan base-package="com.leyikao.onlinelearn.serviceapp.v.service" />
+	
+	<import resource="qaBean.xml"/>
+	<import resource="tdBean.xml"/>
+	<import resource="vBean.xml"/>
+</beans>

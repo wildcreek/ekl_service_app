@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+
+	<!-- 题库bean注入 -->
+	<bean id="coreDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.CoreDao"
+		lazy-init="true">
+	</bean>
+	<bean id="answerResultDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.AnswerResultDao"
+		lazy-init="true">
+	</bean>
+	<bean id="collectionDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.CollectionDao"
+		lazy-init="true">
+	</bean>
+	<bean id="courseDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.CourseDao"
+		lazy-init="true">
+	</bean>
+	<bean id="feedbackDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.FeedbackDao"
+		lazy-init="true">
+	</bean>
+	<bean id="knowledgePointDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.KnowledgePointDao"
+		lazy-init="true">
+	</bean>
+	<bean id="practiceHistoryDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.PracticeHistoryDao"
+		lazy-init="true">
+	</bean>
+	<bean id="questionDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.QuestionDao"
+		lazy-init="true">
+	</bean>
+	<bean id="terminalUserDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.TerminalUserDao"
+		lazy-init="true">
+	</bean>
+	<bean id="testPaperDao" class="com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.TestPaperDao"
+		lazy-init="true">
+	</bean>
+	<bean id="coreBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.CoreBusiness"
+		lazy-init="true">
+	</bean>
+
+	<bean id="answerResultBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.AnswerResultBusiness"
+		lazy-init="true">
+	</bean>
+	<bean id="courseBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.CourseBusiness"
+		lazy-init="true">
+	</bean>
+	<bean id="knowledgePointBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.KnowledgePointBusiness"
+		lazy-init="true">
+	</bean>
+	<bean id="questionBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.QuestionBusiness"
+		lazy-init="true">
+	</bean>
+	<bean id="terminalUserBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.TerminalUserBusiness"
+		lazy-init="true">
+	</bean>
+	<bean id="testDatabaseBusiness"
+		class="com.leyikao.onlinelearn.serviceapp.td.business.TestDatabaseBusiness"
+		lazy-init="true">
+	</bean>
+	
+	<bean id="testDatabaseWebService"
+		class="com.leyikao.onlinelearn.serviceapp.td.webservice.TestDatabaseWebService"
+		lazy-init="true">
+	</bean>
+	<bean id="terminalUserWebService"
+		class="com.leyikao.onlinelearn.serviceapp.td.webservice.TerminalUserWebService"
+		lazy-init="true">
+	</bean>
+</beans>

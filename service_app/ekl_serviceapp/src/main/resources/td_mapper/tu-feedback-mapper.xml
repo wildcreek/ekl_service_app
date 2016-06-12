@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IFeedbackMapper">
+	<insert id="add" parameterType="map">
+		<![CDATA[
+			INSERT INTO `online_learning`.`tu_feedback`
+			(`feedbackId`,
+			`userId`,
+			`score`,
+			`feedbackContent`)
+			VALUES
+			(uuid(),
+			#{userId},
+			#{score},
+			#{feedbackContent})
+		]]>
+	</insert>
+</mapper>

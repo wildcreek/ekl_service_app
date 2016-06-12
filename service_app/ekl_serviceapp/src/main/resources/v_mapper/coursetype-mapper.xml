@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.CourseTypeMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.CourseType" id="CourseTypeResult">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="TYPE_NAME" jdbcType="VARCHAR" property="typeName" />
+		<result column="TYPE_CODE" jdbcType="VARCHAR" property="typeCode" />
+		<result column="TYPE_NUM" jdbcType="INTEGER" property="typeNum" />
+		<result column="PTO_URL" jdbcType="VARCHAR" property="ptoUrl" />
+		<result column="COURSE_NUM" jdbcType="INTEGER" property="courseNum" />
+	</resultMap>
+
+	<select id="getCourseTypeList" resultMap="CourseTypeResult">
+		SELECT
+			a.ID,
+			a.TYPE_CODE,
+			a.TYPE_NAME,
+			a.PTO_URL,
+			count(b.ID) COURSE_NUM
+		FROM
+			VD_COURSE_TYPE AS a
+		LEFT JOIN VD_COURSE_TYPE_RELATION AS b ON a.TYPE_CODE = b.TYPE_CODE
+		GROUP BY
+			a.ID,
+			a.TYPE_CODE,
+			a.TYPE_NAME,
+			a.PTO_URL	
+	</select>
+
+</mapper>

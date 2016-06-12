@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.ICollectionMapper">
+	<select id="statInfo" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    q.knowledgePointId,
+			    COUNT(q.knowledgePointId) collectionCount
+			FROM
+			    td_collection c,
+			    td_question q
+			WHERE
+			    c.userId = #{userId}			
+			        AND q.questionId = c.questionId
+			GROUP BY q.knowledgePointId 
+	 	]]>
+	</select>
+	
+	<insert id="collectionQuestion" parameterType="map">
+		INSERT INTO `td_collection` (`userId`, `questionId`) VALUES (#{userId},#{questionId})
+	</insert>
+	
+	<select id="idList" resultType="map" parameterType="map" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    q.questionId,
+		    q.description qDescription,
+		    dataQ.dataQuestionId,
+		    dataQ.name,
+		    dataQ.description
+		FROM
+		    td_question q
+		        RIGHT JOIN
+		    td_dataQuestion dataQ ON q.dataQuestionId = dataQ.dataQuestionId
+		        JOIN
+		    td_collection col ON q.questionId = col.questionId
+		WHERE
+		    col.userId = #{userId}
+		        AND q.knowledgePointId IN 
+		        <foreach item="item" index="index" collection="knowledgePointIds" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+		        AND col.questionId = q.questionId
+		ORDER BY col.lastModifyTime 
+	</select>
+	
+</mapper>

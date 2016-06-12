@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.CommentMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Comment" id="CommentResult">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="COURSE_ID" jdbcType="INTEGER" property="courseId" />
+		<result column="CONTENT" jdbcType="VARCHAR" property="content" />
+		<result column="COMMENT_NUM" jdbcType="INTEGER" property="commentNum" />
+		<result column="COMMENT_TIME" jdbcType="TIMESTAMP" property="commentTime" />
+		<result column="HIDDEN" jdbcType="CHAR" property="hidden" />
+		
+		<association property="user" javaType="com.leyikao.onlinelearn.serviceapp.v.pojo.User">
+			<id column="userId" jdbcType="VARCHAR" property="userId" />
+			<result column="nickname" jdbcType="VARCHAR" property="userName" />
+			<result column="picUrl" jdbcType="VARCHAR" property="picUrl" />
+
+		</association>
+	</resultMap>
+
+	<select id="getComments" resultMap="CommentResult">
+	
+		SELECT
+			a.*, b.userId,
+			b.nickname,
+			b.picUrl
+		FROM
+			VD_COMMENT a,
+			tu_user b
+		WHERE
+			a.USER_ID = b.userId
+		AND COURSE_ID = #{courseId} 
+		ORDER BY
+			COMMENT_TIME DESC
+		LIMIT 0,#{pageSize}			
+		
+	</select>
+	
+	<insert id="addComment">
+		INSERT INTO VD_COMMENT (
+			COURSE_ID,
+			USER_ID,
+			CONTENT,
+			COMMENT_TIME
+		)
+		VALUES(
+			#{courseId},
+			#{userId},
+			#{text},
+			NOW()
+		)	
+	</insert>
+
+	<select id="getCommentCount" resultType="java.lang.Integer">
+		SELECT
+			count(*)
+		FROM
+			VD_COMMENT a where a.COURSE_ID =#{courseId}
+	</select>
+	
+	<select id="getCommentPages" resultMap="CommentResult">
+		SELECT
+			a.*, b.userId,
+			b.nickname,
+			b.picUrl
+		FROM
+			VD_COMMENT a,
+			tu_user b
+		WHERE
+			a.USER_ID = b.userId
+		AND COURSE_ID = #{courseId}
+		ORDER BY
+			COMMENT_TIME DESC
+		LIMIT #{st},${ps}	
+	</select>
+	
+</mapper>

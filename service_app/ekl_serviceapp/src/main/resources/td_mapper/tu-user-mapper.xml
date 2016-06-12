@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IUserMapper">
+	<insert id="registerMobileClient" parameterType="map">
+		<![CDATA[
+			INSERT INTO `tu_user`(`userId`, `mobilePhone`, `password`, `nickname`) VALUES(UUID(), #{mobilePhone}, #{password}, #{nickname});
+		]]>
+	</insert>
+	
+	<insert id="thirdPartyRegister" parameterType="map">
+		<![CDATA[
+			INSERT INTO `tu_user`(`userId`, `thirdPartyLoginId`, `thirdPartyLoginType`) VALUES(UUID(), #{thirdPartyLoginId}, #{thirdPartyLoginType});
+		]]>
+	</insert>
+
+	<select id="queryMobilePhoneUser" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where mobilePhone = #{mobilePhone}
+		]]>
+	</select>
+	
+	<select id="queryUser" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where userId = #{userId}
+		]]>
+	</select>
+	
+	<select id="queryUserByName" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where nickname = #{nickname}
+		]]>
+	</select>
+	<select id="queryThirdPartyUser" parameterType="map" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where thirdPartyLoginId = #{thirdPartyLoginId} and thirdPartyLoginType = #{thirdPartyLoginType}
+		]]>
+	</select>
+	
+	<select id="loginMobileClient" parameterType="map" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where mobilePhone = #{username} and password = #{password}
+		]]>
+	</select>
+	
+	<select id="thirdPartyLogin" parameterType="map" resultType="map">
+		<![CDATA[
+			SELECT `userId`,
+			    `thirdPartyLoginId`,
+			    concat(`thirdPartyLoginType`) thirdPartyLoginType,
+			    `mobilePhone`,
+			    `password`,
+			    concat(`userType`) userType,
+			    concat(`age`) age,
+			    `nickname`,
+			    concat(`sex`) sex,
+			    `schoolName`,
+			    `major`,
+			    `picUrl`,
+			    concat(`totalPoint`) totalPoint,
+			    `currentExamType`,
+			    `email`,
+			    DATE_FORMAT(createTime, '%Y-%m-%d %H:%i:%s') createTime
+			FROM `tu_user` where thirdPartyLoginId = #{thirdPartyLoginId} and thirdPartyLoginType = #{thirdPartyLoginType}
+		]]>
+	</select>
+	
+	<update id="revisePassword" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`password` = #{password},
+			`createTime` = CURRENT_TIMESTAMP
+			WHERE `mobilePhone` = #{username}
+		]]>
+	</update>
+	<update id="updateReviseNickName" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`nickname` = #{nickname},
+			`createTime` = CURRENT_TIMESTAMP
+			WHERE `userId` = #{userId}
+		]]>
+	</update>
+	
+	<delete id="deleteMobilePhoneUser" parameterType="string">
+		<![CDATA[
+			DELETE FROM `tu_user` WHERE mobilePhone = #{mobilePhone}
+		]]>
+	
+	</delete>
+	
+	<delete id="deleteThirdPartyUser" parameterType="map">
+		<![CDATA[
+			DELETE FROM `tu_user` WHERE thirdPartyLoginId = #{thirdPartyLoginId} and thirdPartyLoginType = #{thirdPartyLoginType}
+		]]>
+	</delete>
+	
+	<update id="saveExamType" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`currentExamType` = #{examType}
+			WHERE `userId` = #{userId}
+		]]>
+	</update>
+	
+	<update id="saveUserImage" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`picUrl` = #{picUrl}
+			WHERE `userId` = #{userId}
+		]]>
+	</update>
+	
+	<select id="idList" resultType="string">
+		<![CDATA[
+			SELECT `userId`
+			FROM `tu_user` 
+		]]>
+	</select>
+	
+	<select id="userCount" resultType="string">
+		<![CDATA[
+			SELECT count(`userId`)
+			FROM `tu_user` 
+		]]>
+	</select>
+	
+	<select id="teacherInfoList" resultType="map">
+		<![CDATA[
+			SELECT 
+			    u.`userId`, userName, `picUrl`, slogan, theSubject
+			FROM
+			    tu_user u
+			        LEFT JOIN
+			    tu_teacher t ON t.userId = u.userId
+			WHERE
+			    u.userType = 1 AND t.isRecommend
+		]]>
+	</select>
+	
+	<select id="teacherImageList" resultType="string">
+		<![CDATA[
+			SELECT 
+			    `picUrl`
+			FROM
+			    tu_user u
+			        LEFT JOIN
+			    tu_teacher t ON t.userId = u.userId
+			WHERE
+			    u.userType = 1 AND t.isRecommend
+		]]>
+	</select>
+	
+	<select id="teacherDetail" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT 
+			    u.`userId`,
+			    userName,
+			    `picUrl`,
+			    slogan,
+			    concat(yearsOfTeaching) yearsOfTeaching,
+			    schoolTeach,
+			    positionalTitles,
+			    introduction
+			FROM
+			    tu_user u
+			        LEFT JOIN
+			    tu_teacher t ON t.userId = u.userId
+			WHERE
+			    u.userId = #{userId} AND u.userType = 1
+        			AND t.isRecommend
+		]]>
+	</select>
+</mapper>

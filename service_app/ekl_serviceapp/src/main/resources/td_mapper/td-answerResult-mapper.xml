@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IAnswerResultMapper">
+	<select id="answerInfoByKnowledgePoint" resultType="map" parameterType="map" useCache="false"
+		flushCache="true">
+		SELECT 
+		    question.knowledgePointId,
+		    a.questionId,
+		    a.answerStatus,
+		    DATE_FORMAT(a.lastModifyTime, '%Y-%m-%d %H:%i:%s') lastModifyTime
+		FROM
+		    td_practiceHistory p,
+		    td_answerResult a,
+		    td_question question
+		WHERE
+		    p.userId = #{userId}
+		        AND question.knowledgePointId IN 
+		        <foreach item="item" index="index" collection="knowledgePointIds" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+		        AND a.practiceHistoryId = p.practiceHistoryId
+		        AND a.questionId = question.questionId
+		        AND answerStatus != 2 
+	</select>
+	
+	<select id="errorQuestions" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	    	SELECT 
+			    question.knowledgePointId,
+			    a.questionId,
+			    a.answerStatus,
+			    DATE_FORMAT(a.lastModifyTime, '%Y-%m-%d %H:%i:%s') lastModifyTime
+			FROM
+			    td_practiceHistory p,
+			    td_answerResult a,
+			    td_question question
+			WHERE
+			    p.userId = #{userId}
+			    	AND answerStatus != 2 
+			        AND p.practiceHistoryId = a.practiceHistoryId
+			        AND a.questionId = question.questionId
+			        
+	 	]]>
+	</select>
+	
+	<!-- 错题资料及题目 -->
+	<select id="errorDataQuestions" resultType="map" parameterType="map" useCache="false"
+		flushCache="true">
+    	SELECT 
+		    question.knowledgePointId,
+		    question.description qDescription,
+		    a.questionId,
+		    a.answerStatus,
+		    DATE_FORMAT(a.lastModifyTime, '%Y-%m-%d %H:%i:%s') lastModifyTime,
+		    dataQ.dataQuestionId,
+		    dataQ.`name` dataQuestionName,
+		    dataQ.description dataDescription
+		FROM
+		    td_practiceHistory p
+		        JOIN
+		    td_answerResult a ON p.practiceHistoryId = a.practiceHistoryId
+		        JOIN
+		    td_question question ON a.questionId = question.questionId
+		        LEFT JOIN
+		    td_dataQuestion dataQ ON question.dataQuestionId = dataQ.dataQuestionId
+		WHERE
+		    p.userId = #{userId}
+	        AND question.knowledgePointId IN 
+	        <foreach item="item" index="index" collection="knowledgePointIds" open="(" separator="," close=")">
+			#{item}
+			</foreach>
+			AND answerStatus != 2
+	</select>
+	
+	<!-- 已经回答过的题目列表 -->
+	<select id="idList" resultType="string" parameterType="map" useCache="false"
+		flushCache="true">
+		SELECT DISTINCT
+		    a.questionId
+		FROM
+		    td_practiceHistory p,
+		    td_answerResult a,
+		    td_question question
+		WHERE
+		    p.userId = #{userId}
+		        AND question.knowledgePointId IN 
+		        <foreach item="item" index="index" collection="knowledgePointIds" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+				AND answerStatus != 2
+		        AND a.practiceHistoryId = p.practiceHistoryId
+		        AND a.questionId = question.questionId	        
+	</select>
+	
+	<insert id="add" parameterType="list">
+		INSERT INTO `td_answerResult`
+			(`answerResultId`,
+			`practiceHistoryId`,
+			`questionId`,
+			`submitOptions`,
+			`useTime`,
+			`answerStatus`)
+		VALUES
+		<foreach item="tag" collection="list" index="index" separator=",">
+			(#{tag.answerResultId},
+			#{tag.practiceHistoryId},
+			#{tag.questionId},
+			#{tag.submitOptions},
+			#{tag.useTime},
+			#{tag.answerStatus})       
+		</foreach>
+	</insert>
+	
+	<select id="testDatabaseAnswerStat" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+			SELECT 
+			    p.practiceHistoryId, aw.answerStatus, COUNT(aw.answerStatus) answerCount
+			FROM
+			    td_practiceHistory p,
+			    td_answerResult aw
+			WHERE
+			    p.testPaperId = #{testPaperId}
+			    	AND answerStatus != 2
+			        AND p.practiceHistoryId = aw.practiceHistoryId
+			GROUP BY p.practiceHistoryId, aw.answerStatus	        
+	 	]]>
+	</select>
+	
+	<select id="questionAnswerStat" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+		SELECT 
+		    questionId,
+		    answerStatus,
+		    COUNT(answerStatus) answerNumber
+		FROM
+		    td_answerResult
+		WHERE
+		    questionId IN 
+		    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+			</foreach>
+			AND answerStatus != 2
+		GROUP BY questionId , answerStatus	        
+	</select>
+	
+	<select id="practiceAnswerResult" resultType="map" parameterType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+			SELECT 
+			    questionId, answerStatus, submitOptions, useTime
+			FROM
+			    td_answerResult
+			WHERE
+			    practiceHistoryId = #{practiceHistoryId}
+	 	]]>
+	</select>
+	
+	<select id="answerInfoByQuestion" resultType="map" parameterType="list" useCache="false"
+		flushCache="true">
+			SELECT 
+			    questionId, answerStatus, submitOptions
+			FROM
+			    td_answerResult
+			WHERE
+			    questionId IN 
+			    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+				</foreach>
+				AND answerStatus != 2        
+	</select>
+	
+	<select id="answerQuestionNumber" resultType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+			SELECT 
+			    COUNT(DISTINCT questionId)
+			FROM
+			    td_answerResult
+			WHERE
+			    answerStatus != 2       
+	 	]]>
+	</select>
+</mapper>

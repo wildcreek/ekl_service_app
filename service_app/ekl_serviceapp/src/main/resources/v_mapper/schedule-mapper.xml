@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.ScheduleMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Schedule" id="ScheduleResult">
+		<id column="SCHEDULE_ID" jdbcType="INTEGER" property="scheduleId" />
+		<result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+		<result column="COURSE_ID" jdbcType="INTEGER" property="courseId" />
+		<result column="CHAPTER_ID" jdbcType="INTEGER" property="chapterId" />
+		<result column="VIDEO_ID" jdbcType="INTEGER" property="videoId" />
+		<result column="SEEN" jdbcType="INTEGER" property="seen" />
+		<result column="TIMELONG" jdbcType="INTEGER" property="timelong" />
+		<result column="COMPLETE" jdbcType="CHAR" property="complete" />
+
+	</resultMap>
+	<insert id="saveSchem" >
+		INSERT INTO VD_SCHEDULE (
+			USER_ID,
+			COURSE_ID,
+			CHAPTER_ID,
+			VIDEO_ID,
+			COMPLETE
+		)
+		VALUES (
+			#{userId},
+			#{courseId},
+			#{chapterId},
+			#{videoId},
+			#{flag}
+		)
+	</insert>
+	
+	<select id="userHasSchme" resultMap="ScheduleResult">
+		SELECT
+			*
+		FROM
+			VD_SCHEDULE a
+		WHERE
+			a.USER_ID = #{userId}
+		AND a.COURSE_ID = #{courseId}
+		AND a.CHAPTER_ID = #{chapterId}
+		AND a.VIDEO_ID = #{videoId}
+	</select>
+	<update id="updateSchem">
+		update VD_SCHEDULE a set a.COMPLETE = #{flag} where a.SCHEDULE_ID = #{scheduleId}
+	</update>
+
+</mapper>
+

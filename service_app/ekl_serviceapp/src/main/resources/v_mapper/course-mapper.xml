@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.CourseMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Course" id="CourseResult">
+		<id column="COURSE_ID" jdbcType="INTEGER" property="courseId" />
+		<result column="COURSE_NAME" jdbcType="VARCHAR" property="courseName" />
+		<result column="PHOTO_URL" jdbcType="VARCHAR" property="photoUrl" />
+		<result column="PRICE" jdbcType="FLOAT" property="price" />
+		<result column="TIMELONG" jdbcType="INTEGER" property="timelong" />
+		<result column="INTRODUCTION" jdbcType="VARCHAR" property="introduction" />
+		<result column="NEEDPAY" jdbcType="CHAR" property="needpay" />
+		
+		<result column="NUM" jdbcType="INTEGER" property="num" />
+		<result column="ADMIRE" jdbcType="INTEGER" property="admire" />
+
+	</resultMap>
+
+	<select id="getCourseList" resultMap="CourseResult">
+		<if test="courseType == null">
+			SELECT
+				a.* ,count(b.SCHEDULE_ID) NUM
+			FROM
+				VD_COURSE a left join VD_SCHEDULE b  on a.COURSE_ID = b.COURSE_ID 
+			group by  a.COURSE_ID 
+ 			LIMIT 0, #{ps}
+
+		</if>
+		<if test="courseType != null">		
+			
+			SELECT
+				a.* ,count(c.SCHEDULE_ID) NUM
+			FROM
+				VD_COURSE a 
+			INNER JOIN VD_COURSE_TYPE_RELATION b ON a.COURSE_ID = b.COURSE_ID left join VD_SCHEDULE c  on a.COURSE_ID = c.COURSE_ID 
+			where  b.TYPE_CODE = #{courseType} group by a.COURSE_ID 
+			LIMIT 0, #{ps}	
+		</if>
+	</select>
+	
+	<select id="getCourseById" resultMap="CourseResult">
+		SELECT
+			a.*,count(b.SCHEDULE_ID) NUM, 
+			(
+				SELECT
+					b.ZANG
+				FROM
+					VD_ADMIRE b
+				INNER JOIN tu_user c ON b.USER_ID = c.userId
+				WHERE
+					b.COURSE_ID = a.COURSE_ID
+				AND c.userId = #{userId}
+			) ADMIRE
+		FROM
+			VD_COURSE a left join VD_SCHEDULE b  on a.COURSE_ID = b.COURSE_ID 
+		WHERE
+			a.COURSE_ID = #{courseId}
+	</select>
+	
+	<select id="getCoursePageList" resultMap="CourseResult">
+		<if test="courseType == null">
+
+			SELECT
+				a.* ,count(b.SCHEDULE_ID) NUM
+			FROM
+				VD_COURSE a left join VD_SCHEDULE b  on a.COURSE_ID = b.COURSE_ID 
+			group by  a.COURSE_ID 
+ 			LIMIT #{pn} , #{ps}
+		</if>
+		<if test="courseType != null"> 
+			
+			SELECT
+				a.* ,count(c.SCHEDULE_ID) NUM
+			FROM
+				VD_COURSE a 
+			INNER JOIN VD_COURSE_TYPE_RELATION b ON a.COURSE_ID = b.COURSE_ID left join VD_SCHEDULE c  on a.COURSE_ID = c.COURSE_ID 
+			where  b.TYPE_CODE = #{courseType} group by a.COURSE_ID 
+			LIMIT #{pn} , #{ps} 			
+		</if>
+		
+	</select>
+
+</mapper>

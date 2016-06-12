@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.AdmireMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Admire" id="AdmireResult">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="COURSE_ID" jdbcType="INTEGER" property="courseId" />
+		<result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+		<result column="ZANG" jdbcType="INTEGER" property="zang" />
+		<result column="TIME" jdbcType="TIMESTAMP" property="time" />
+
+	</resultMap>
+	
+	<insert id="addAdmire" >
+		insert into VD_ADMIRE (COURSE_ID,USER_ID,ZANG,TIME) values 
+		(#{courseId},#{userId},#{flag},NOW()) 
+	</insert>
+	
+	<update id="updateAdmire">
+		update VD_ADMIRE set ZANG = #{flag} where COURSE_ID= #{courseId} 
+		and USER_ID = #{userId} 
+	</update>
+
+	<select id="checkAdmire" resultMap="AdmireResult">
+	
+		select * from VD_ADMIRE where COURSE_ID= #{courseId} and USER_ID = #{userId} 
+	</select>
+	
+
+</mapper>

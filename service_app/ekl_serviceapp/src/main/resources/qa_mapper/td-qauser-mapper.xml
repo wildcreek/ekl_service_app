@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.qa.mapper.IQAUserMapper">
+	<select id="qureyCourseList" resultType="string" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	 SELECT courseName from td_course GROUP BY courseName
+	 	]]>
+	</select>
+
+	<select id="queryReplyList" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+	SELECT 	u.userId,u.picUrl as userPicUrl,u.nickname,re.replyId,re.replyDescr,re.picUrl as replyPicUrl,re.createTime as publishTime,ac.acceptId,th.thanksId
+		FROM qa_reply re 
+		LEFT JOIN qa_accept ac ON re.replyId = ac.replyId
+		LEFT JOIN qa_thanks th ON re.replyId = th.replyId,tu_user u
+	WHERE
+		re.problemId = #{problemId} AND re.userId= u.userId and re.quoteReplyId='' ORDER BY re.createTime DESC LIMIT #{pageNumber},
+ 				#{pagesize}
+		
+	 	]]>
+	</select>
+
+	<select id="queryReplyListCount" parameterType="map" resultType="string"
+		useCache="false" flushCache="true">
+		<![CDATA[
+	SELECT 	count(*) as replycount
+		FROM qa_reply re 
+	
+	WHERE
+		re.problemId = #{problemId} and re.quoteReplyId=''   ORDER BY re.createTime DESC
+		
+	 	]]>
+	</select>
+
+
+	<select id="seekHelpCount" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+SELECT
+	COUNT(*) as seekhelpcount
+FROM
+	qa_seekhelp
+WHERE
+	userId = #{userId}
+AND problemId = #{problemId}
+		
+	 	]]>
+	</select>
+
+	<select id="questionCloseList" parameterType="string"
+		resultType="map" useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+					u.userId,
+					u.picUrl AS userPicUrl,
+					u.nickname,
+					re.replyId,
+					re.replyDescr,
+					re.picUrl AS replyPicUrl,
+					re.createTime
+				FROM
+					qa_reply re
+				LEFT JOIN qa_accept ac ON re.replyId = ac.replyId,
+ 				tu_user u
+				WHERE
+					re.quoteReplyId =#{quoteReplyId}
+					AND re.userId = u.userId
+					ORDER BY
+					re.createTime ASC
+	 	]]>
+	</select>
+
+
+	<select id="myReplyList" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+					pr.userId,
+					us.picUrl,
+					us.nickname,
+					pr.problemId,
+					pr.createTime,
+					pr.questionDescr AS problemDescr,
+					pr.picUrl AS problemPicUrl,
+					CASE seekcount.seekbyid > 0
+				WHEN TRUE THEN
+					1
+				WHEN FALSE THEN
+					0
+				ELSE
+					- 1
+				END AS isseek
+				FROM
+					tu_user us,
+					(
+					SELECT
+							COUNT(*) AS seekbyid
+						FROM
+							qa_seekhelp se
+						WHERE
+							se.userId = #{userId}
+					) seekcount,
+				(
+		SELECT
+			re.*
+		FROM
+			qa_reply re
+		WHERE
+			re.userId = #{userId}
+		GROUP BY
+			re.problemId
+	) rll,
+					qa_problem pr
+				WHERE
+				pr.courseName = #{courseName}
+				AND pr.userId != #{userId}
+				AND us.userId = pr.userId
+				AND pr.problemId = rll.problemId
+			
+				ORDER BY
+					pr.createTime DESC
+				LIMIT #{pageNumber},
+ 				#{pagesize}
+		
+		
+		]]>
+	</select>
+
+	<select id="myReplyListCount" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+					count(*)as problemcount
+				FROM
+					tu_user us,
+			
+				(
+		SELECT
+			re.*
+		FROM
+			qa_reply re
+		WHERE
+			re.userId = #{userId}
+		GROUP BY
+			re.problemId
+	) rll,
+					qa_problem pr
+				WHERE
+				pr.courseName = #{courseName}
+				AND pr.userId != #{userId}
+				AND us.userId = pr.userId
+				AND pr.problemId = rll.problemId
+		
+				ORDER BY
+					pr.createTime DESC
+		
+		]]>
+	</select>
+
+	<select id="problemList" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+					*
+				FROM
+					(
+						SELECT
+							pr.userId,
+							us.picUrl,
+							us.nickname,
+							pr.problemId,
+							pr.createTime,
+							pr.questionDescr AS problemDescr,
+							pr.picUrl AS problemPicUrl
+						FROM
+							tu_user us,
+							qa_problem pr
+						WHERE
+							pr.courseName = #{courseName}
+							AND pr.userId !=  #{userId}
+							AND us.userId = pr.userId
+						) allt
+					LEFT JOIN (
+					SELECT
+						re.problemId AS accproblemId
+						FROM
+						qa_reply re,
+							qa_accept ac
+					WHERE
+						ac.replyId = re.replyId
+					GROUP BY
+						problemId
+					) po ON allt.problemId = po.accproblemId
+				WHERE
+					po.accproblemId IS NULL
+					ORDER BY
+					allt.createTime DESC
+				LIMIT #{pageNumber},
+ 				#{pagesize}
+
+		]]>
+	</select>
+
+
+	<select id="problemListCount" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[		
+				SELECT
+					count(*)  as problemcount
+				FROM
+					(
+						SELECT
+							pr.userId,
+							us.picUrl,
+							us.nickname,
+							pr.problemId,
+							pr.createTime,
+							pr.questionDescr AS problemDescr,
+							pr.picUrl AS problemPicUrl
+						FROM
+							tu_user us,
+							qa_problem pr
+						WHERE
+							pr.courseName = #{courseName}
+							AND pr.userId !=  #{userId}
+							AND us.userId = pr.userId
+						) allt
+					LEFT JOIN (
+					SELECT
+						re.problemId AS accproblemId
+						FROM
+						qa_reply re,
+							qa_accept ac
+					WHERE
+						ac.replyId = re.replyId
+					GROUP BY
+						problemId
+					) po ON allt.problemId = po.accproblemId
+				WHERE
+					po.accproblemId IS NULL
+		
+		]]>
+	</select>
+
+
+	<select id="myProblemListCount" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+					SELECT
+					count(*)  as problemcount
+				FROM
+					tu_user us,
+					(
+					SELECT
+							COUNT(*) AS seekbyid
+						FROM
+							qa_seekhelp se
+						WHERE
+							se.userId = #{userId}
+					) seekcount,
+			
+					qa_problem pr
+				WHERE
+				pr.courseName = #{courseName}
+				AND pr.userId = #{userId}
+				AND us.userId = pr.userId
+				ORDER BY
+					pr.createTime DESC
+		
+		]]>
+	</select>
+	<select id="myProblemList" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+					pr.userId,
+					us.picUrl,
+					us.nickname,
+					pr.problemId,
+					pr.createTime,
+					pr.questionDescr AS problemDescr,
+					pr.picUrl AS problemPicUrl,
+					CASE seekcount.seekbyid > 0
+				WHEN TRUE THEN
+					1
+				WHEN FALSE THEN
+					0
+				ELSE
+					- 1
+				END AS isseek
+				FROM
+					tu_user us,
+					(
+					SELECT
+							COUNT(*) AS seekbyid
+						FROM
+							qa_seekhelp se
+						WHERE
+							se.userId = #{userId}
+					) seekcount,
+			
+					qa_problem pr
+				WHERE
+				pr.courseName = #{courseName}
+				AND pr.userId = #{userId}
+				AND us.userId = pr.userId
+		
+				ORDER BY
+					pr.createTime DESC
+				LIMIT #{pageNumber},#{pagesize}
+		
+		]]>
+	</select>
+
+	<select id="qureyProblemList" parameterType="map" resultType="map"
+		useCache="false" flushCache="true">
+		<![CDATA[
+				SELECT
+	pr.problemId,
+	pr.createTime,
+	pr.questionDescr AS problemDescr,
+	pr.picUrl AS problemPicUrl
+FROM
+	qa_problem pr
+WHERE
+	pr.courseName =#{courseName}
+AND pr.userId = #{userId}
+ORDER BY
+	pr.createTime DESC
+LIMIT 0,
+ 20
+		
+		
+		]]>
+	</select>
+
+	<select id="qureyCoutInfo" resultType="map" useCache="false"
+		flushCache="true">
+		<![CDATA[
+	 			SELECT
+			*
+FROM
+	(
+		SELECT
+			COUNT(userId) as replyTimes
+		FROM
+			qa_reply
+		WHERE
+			problemId = #{problemId} and quoteReplyId=''
+	) re,
+	(
+		SELECT
+			COUNT(userId) as shareTimes
+		FROM
+			qa_share
+		WHERE
+			problemId = #{problemId}
+	) sh,
+	(
+		SELECT
+				COUNT(userId) as seekhelpTimes
+		FROM
+			qa_seekhelp
+		WHERE
+			problemId =#{problemId}
+	) see
+	 	]]>
+	</select>
+
+
+	<insert id="saveReply" parameterType="map">
+		<![CDATA[
+			INSERT INTO `qa_reply`
+			(
+			`replyId`,
+			`problemId`,
+			`userId`,
+			`picUrl`,
+			`replyDescr`,
+			`quoteReplyId`
+			
+		)
+			VALUES(
+			#{replyId},
+			#{problemId},
+			#{userId},
+			#{userImagePathName},
+			#{replyDescr},
+			#{quoteReplyId})
+			
+		]]>
+	</insert>
+
+	<insert id="saveProblem" parameterType="map">
+		<![CDATA[
+			INSERT INTO `qa_problem`
+			(
+			`userId`,
+			`courseName`,
+			`picUrl`,
+			`problemId`,
+			`questionDescr`
+			
+		)
+			VALUES(
+			#{userId},
+			#{courseName},
+			#{picUrl},
+			#{problemId},
+			#{questionDescr})
+			
+		]]>
+	</insert>
+
+	<insert id="saveAccept" parameterType="map">
+		<![CDATA[
+			INSERT INTO `qa_accept`
+			(
+			`acceptId`,
+			`replyId`,
+			`userId`
+			
+		)
+			VALUES(
+			#{acceptId},
+			#{replyId},
+			#{userId})
+		
+		]]>
+	</insert>
+	<insert id="saveSeekhelp" parameterType="map">
+		<![CDATA[
+			INSERT INTO `qa_seekhelp`
+			(
+			`seekhelpId`,
+			`userId`,
+			`problemId`
+		)
+			VALUES(
+			#{seekhelpId},
+			#{userId},
+			#{problemId})
+		
+		]]>
+	</insert>
+
+	<insert id="saveThanks" parameterType="map">
+		<![CDATA[
+			INSERT INTO `qa_thanks`
+			(
+			`thanksId`,
+			`userId`,
+			`replyId`
+		)
+			VALUES(
+			#{thanksId},
+			#{userId},
+			#{replyId})
+		
+		]]>
+	</insert>
+</mapper>

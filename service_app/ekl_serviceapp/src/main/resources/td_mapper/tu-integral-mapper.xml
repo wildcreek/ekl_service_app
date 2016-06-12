@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.td.mapper.IIntegralMapper">
+
+
+	<select id="findIntegralRule" parameterType="map" resultType="map">
+		<![CDATA[
+			SELECT integralNumber,actionId FROM `tu_integralRule` where actionId=#{actionid}
+		]]>
+	</select>
+	
+		<select id="findIntegralPool" parameterType="map" resultType="map">
+		<![CDATA[
+			SELECT integralBalance,lastModifyTime FROM `tu_integralPool` where 1=1 and userId=#{userId} and actionId=#{actionId} 
+		]]>
+	</select>
+		<select id="findReply" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT userId FROM `qa_reply` where replyId=#{replyid}
+		]]>
+	</select>
+	
+		<select id="countPractice" parameterType="string" resultType="map">
+		<![CDATA[
+			SELECT
+	COUNT(*) AS countcore
+FROM
+	td_answerResult ar,
+	(
+		SELECT
+			practiceHistoryId,
+			MAX(lastModifyTime),
+			userId
+		FROM
+			td_practiceHistory where userId = #{userId}
+	) ph
+WHERE
+	ar.practiceHistoryId = ph.practiceHistoryId
+
+AND ar.answerStatus IN (0, 1)
+		]]>
+	</select>
+	
+	<update id="updateUserCore" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`totalPoint` = `totalPoint`+#{integralNumber}
+			WHERE `userId` = #{userId} 
+		]]>
+	</update>
+	
+		<update id="updateUserCoreBythirdPartyLoginId" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_user`
+			SET
+			`totalPoint` = `totalPoint`+#{integralNumber}
+			WHERE `thirdPartyLoginId` = #{thirdPartyLoginId} 
+		]]>
+	</update>
+		<insert id="insertIntegralPool" parameterType="map">
+		<![CDATA[
+		INSERT INTO `tu_integralPool` (`userId`, `actionIdfindReply, `integralBalance`) VALUES (#{userId},  #{actionId},#{integralBalance})
+		]]>
+	</insert>
+		<update id="updateIntegralPool" parameterType="map">
+		<![CDATA[
+			UPDATE `tu_integralPool` SET `lastModifyTime`=#{lastModifyTime} WHERE actionId=#{actionId} and userId=#{userId}
+		]]>
+	</update>
+</mapper>

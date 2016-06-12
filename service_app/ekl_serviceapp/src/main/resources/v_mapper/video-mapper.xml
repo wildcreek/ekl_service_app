@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.leyikao.onlinelearn.serviceapp.v.mapper.VideoMapper">
+	<resultMap type="com.leyikao.onlinelearn.serviceapp.v.pojo.Video" id="VideoResult">
+		<id column="VIDEO_ID" jdbcType="INTEGER" property="videoId" />
+		<result column="VIDEO_NAME" jdbcType="VARCHAR" property="videoName" />
+		<result column="UPLOAD_STATE" jdbcType="CHAR" property="uploadState" />
+		<result column="UPLOAD_TIME" jdbcType="TIMESTAMP" property="uploadTime" />
+		<result column="TIME_LONG" jdbcType="INTEGER" property="timelong" />
+		<result column="CC_VIDEO_ID" jdbcType="VARCHAR" property="ccVideoId" />
+		<result column="IMG_URL" jdbcType="VARCHAR" property="imgUrl" />
+		<result column="PLAY_JS_CODE" jdbcType="VARCHAR" property="playJsCode" />
+
+	</resultMap>
+
+	<select id="getVideoBychapterId" resultMap="VideoResult">
+		SELECT
+			*
+		FROM
+			VD_VIDEO a,
+			VD_COURSE_VIDEO b
+		WHERE
+			a.VIDEO_ID = b.VIDEO_ID
+		AND b.CHAPTER_ID = #{chapterId}
+	</select>
+	
+	<insert id="saveSchem" >
+		INSERT INTO VD_SCHEDULE (
+			USER_ID,
+			COURSE_ID,
+			CHAPTER_ID,
+			VIDEO_ID,
+			COMPLETE
+		)
+		VALUES (
+			#{userId},
+			#{courseId},
+			#{chapterId},
+			#{videoId},
+			#{flag}
+		)
+	</insert>
+	
+	<select id="userHasSchme" resultType="java.lang.Integer">
+		SELECT
+			*
+		FROM
+			VD_SCHEDULE a
+		WHERE
+			a.USER_ID = #{userId}
+		AND a.COURSE_ID = #{courseId}
+		AND a.CHAPTER_ID = #{chapterId}
+		AND a.VIDEO_ID = #{videoId}
+	</select>
+
+</mapper>
+
