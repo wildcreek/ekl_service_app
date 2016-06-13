@@ -1,27 +1,19 @@
 package com.leyikao.onlinelearn.serviceapp.td.business;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-
 import com.leyikao.onlinelearn.serviceapp.td.dao.IPracticeHistoryDao;
 import com.leyikao.onlinelearn.serviceapp.td.dao.mybatis.AnswerResultDao;
 import com.leyikao.onlinelearn.serviceapp.td.pojo.AnswerResultInfo;
 import com.leyikao.onlinelearn.serviceapp.td.pojo.KnowledgePointNode;
 import com.leyikao.onlinelearn.serviceapp.td.pojo.KnowledgePointTree;
 import com.leyikao.onlinelearn.serviceapp.util.Utils.AnswerResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+
+import java.text.DecimalFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AnswerResultBusiness {
 

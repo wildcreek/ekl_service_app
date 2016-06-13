@@ -18,6 +18,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import static sun.plugin.javascript.navig.JSType.Document;
 
 
 public class VideoUtils {

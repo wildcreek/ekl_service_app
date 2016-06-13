@@ -1,12 +1,11 @@
 package com.leyikao.onlinelearn.serviceapp.v.mapper;
 
-import com.leyikao.onlinelearn.serviceapp.v.pojo.Schedule;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
+import org.apache.ibatis.annotations.Param;
+
+import com.leyikao.onlinelearn.serviceapp.v.pojo.Schedule;
+
 public interface ScheduleMapper {
 	void saveSchem(@Param("userId") String userId, @Param("chapterId") String chapterId,
 				   @Param("videoId") String videoId, @Param("flag") String flag, @Param("courseId") String courseId);

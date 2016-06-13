@@ -1,12 +1,11 @@
 package com.leyikao.onlinelearn.serviceapp.v.mapper;
 
-import com.leyikao.onlinelearn.serviceapp.v.pojo.Comment;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
+import org.apache.ibatis.annotations.Param;
+
+import com.leyikao.onlinelearn.serviceapp.v.pojo.Comment;
+
 public interface CommentMapper {
 	
 	public List<Comment> getComments(@Param("courseId") String courseId, @Param("pageSize") int pageSize);

@@ -1,11 +1,8 @@
 package com.leyikao.onlinelearn.serviceapp.qa.mapper;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Map;
 
-@Repository
 public interface IQAUserMapper {
 	public List<String> qureyCourseList();
 

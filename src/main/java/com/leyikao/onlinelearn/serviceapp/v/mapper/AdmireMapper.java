@@ -1,12 +1,11 @@
 package com.leyikao.onlinelearn.serviceapp.v.mapper;
 
-import com.leyikao.onlinelearn.serviceapp.v.pojo.Admire;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
+import org.apache.ibatis.annotations.Param;
+
+import com.leyikao.onlinelearn.serviceapp.v.pojo.Admire;
+
 public interface AdmireMapper {
 
 	void addAdmire(@Param("userId") String userId, @Param("courseId") String courseId, @Param("flag") int flag);

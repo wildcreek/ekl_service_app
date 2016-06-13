@@ -1,12 +1,11 @@
 package com.leyikao.onlinelearn.serviceapp.v.mapper;
 
-import com.leyikao.onlinelearn.serviceapp.v.pojo.Course;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
+import org.apache.ibatis.annotations.Param;
+
+import com.leyikao.onlinelearn.serviceapp.v.pojo.Course;
+
 public interface CourseMapper {
 	
 	public List<Course> getCourseList(@Param("ps") int ps, @Param("courseType") String courseType);

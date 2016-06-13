@@ -1,11 +1,9 @@
 package com.leyikao.onlinelearn.serviceapp.td.mapper;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-@Repository
+
 public interface IQuestionMapper {
 	public List<Map<String, Object>> statInfo(List<String> testPaperIds);
 	public List<Map<String, String>> idList(List<String> knowledgePointIds);

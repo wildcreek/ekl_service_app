@@ -1,11 +1,9 @@
 package com.leyikao.onlinelearn.serviceapp.td.mapper;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-@Repository
+
 public interface IAnswerResultMapper {
 	public List<Map<String, Object>> answerInfoByKnowledgePoint(Map<String, Object> map);
 	public List<Map<String, Object>> errorQuestions(String userId);
